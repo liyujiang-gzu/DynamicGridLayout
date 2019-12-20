@@ -1,0 +1,68 @@
+project.configurations.all {
+    //此处可用于解决依赖冲突问题，参阅https://developer.android.google.cn/studio/build/dependencies#duplicate_classes
+    resolutionStrategy {
+        force "androidx.core:core:${androidxCoreVersion}"
+        force "androidx.lifecycle:lifecycle-runtime:${androidxLifecycleVersion}"
+        force "androidx.annotation:annotation:$androidxCoreVersion"
+        force "androidx.collection:collection:$androidxCoreVersion"
+        force "androidx.appcompat:appcompat:$androidxCoreVersion"
+        force "androidx.recyclerview:recyclerview:1.0.0"
+    }
+}
+
+android {
+    compileSdkVersion androidCompileSdkVersion as int
+    buildToolsVersion androidBuildToolsVersion
+    defaultConfig {
+        minSdkVersion androidMinSdkVersion as int
+        targetSdkVersion androidTargetSdkVersion as int
+        versionCode androidAppVersionCode as int
+        versionName androidAppVersionName
+        ndk {
+            //支持的CPU架构：armeabi、armeabi-v7a、arm64-v8a、x86、x86_64、mips、mips64
+            //目前主流手机都支持armeabi和armeabi-v7a，电脑上的模拟器支持x86，mips基本不用于手机
+            if (androidAppX86Support.toString().equalsIgnoreCase("true")) {
+                abiFilters 'armeabi-v7a', 'x86'
+            } else {
+                abiFilters 'armeabi-v7a'
+            }
+        }
+    }
+    aaptOptions {
+        cruncherEnabled false
+        useNewCruncher false
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        doNotStrip '*/mips/*.so'
+        doNotStrip '*/mips64/*.so'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL*'
+        exclude 'META-INF/ASL*'
+        exclude 'META-INF/proguard/*'
+        exclude 'META-INF/*.version'
+        exclude 'LICENSE*'
+        exclude 'junit/*/*'
+    }
+}
+
+dependencies {
+    implementation "androidx.core:core:$androidxCoreVersion"
+    implementation "androidx.annotation:annotation:$androidxCoreVersion"
+    annotationProcessor "androidx.annotation:annotation:$androidxCoreVersion"
+}

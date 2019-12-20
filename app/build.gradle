@@ -1,0 +1,104 @@
+import java.text.SimpleDateFormat
+
+apply plugin: 'com.android.application'
+
+android {
+    defaultConfig {
+        multiDexEnabled true
+        applicationId androidAppPackageName
+        //必须添加，不添加编译不通过，后面的数值，目前好像任何字符串都可以
+        flavorDimensions "channel"
+
+        signingConfigs {
+            //直接使用真实的密钥库文件，避免微信分享等SDK校验失败问题
+            releaseConfig {
+                storeFile project.getParent().file(signingStorePath)
+                storePassword signingStorePassword
+                keyAlias signingKeyAlias
+                keyPassword signingKeyPassword
+                v1SigningEnabled true
+                v2SigningEnabled true
+            }
+        }
+    }
+    // 打包渠道列表，会按渠道名字母顺序执行
+    productFlavors {
+        official {
+            dimension "channel"
+        }
+        developer {
+            dimension "channel"
+        }
+    }
+    // 批量处理渠道
+    productFlavors.all { flavor ->
+        String buildDate = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance(Locale.CHINA).getTime())
+        String channelName = name
+        channelName = channelName + "_" + buildDate
+        println "渠道名称：" + channelName
+        //替换AndroidManifest.xml中的默认值
+        flavor.manifestPlaceholders = [LYJ_CHANNEL: channelName]
+    }
+    //定制渠道包文件名，参阅 https://www.jianshu.com/p/d4e8b5062da6
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            String buildTypeName = variant.buildType.name
+            if (outputFileName != null && outputFileName.endsWith(".apk")) {
+                if (buildTypeName == "debug") {
+                    println "调试模式渠道包不改名，以便使用`gradlew installDeveloperDebug`"
+                    return
+                }
+                File targetDir = new File(projectDir.getParent(), buildTypeName)
+                targetDir.mkdirs()
+                variant.getPackageApplicationProvider().get().outputDirectory = targetDir
+                String fileName
+                if (outputFileName.contains("official")) {
+                    fileName = "app-${buildTypeName}.apk"
+                } else {
+                    String flavorName = variant.productFlavors[0].name
+                    String versionName = defaultConfig.versionName
+                    String buildDate = new SimpleDateFormat("yyyyMMdd").format(Calendar.getInstance(Locale.CHINA).getTime())
+                    fileName = "app-${buildTypeName}_${flavorName}_${versionName}_build${buildDate}.apk"
+                }
+                //这里只能用相对路径，不然报错
+                File targetFile = new File(fileName)
+                outputFileName = targetFile
+                println "outputDirectory=" + targetDir.getAbsolutePath() + ", outputFileName=" + targetFile.getAbsolutePath()
+            }
+        }
+    }
+    buildTypes {
+        //线上版本
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules-common.pro', 'proguard-rules.pro'
+            shrinkResources false
+            debuggable false
+            jniDebuggable false
+            zipAlignEnabled true
+            signingConfig signingConfigs.releaseConfig
+        }
+        //调试版本
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            debuggable true
+            jniDebuggable true
+            zipAlignEnabled true
+            signingConfig signingConfigs.releaseConfig
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.aar'], dir: 'libs')
+    implementation "androidx.appcompat:appcompat:$androidxCoreVersion"
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation "androidx.gridlayout:gridlayout:1.0.0"
+    implementation 'com.blankj:utilcodex:1.26.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.github.bumptech.glide:glide:4.10.0'
+    implementation "com.github.bumptech.glide:okhttp3-integration:4.9.0"
+    annotationProcessor "com.github.bumptech.glide:compiler:4.10.0"
+}

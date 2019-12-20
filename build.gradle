@@ -1,0 +1,55 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:${gradleBuildVersion}"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        //仓库源是从上往下寻找的，优先从阿里云镜像仓库获取
+        maven {
+            url 'https://maven.aliyun.com/repository/public'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/jcenter'
+        }
+        maven {
+            url 'https://maven.aliyun.com/repository/google'
+        }
+        maven {
+            url "https://jitpack.io"
+        }
+        google()
+        jcenter()
+    }
+}
+
+subprojects {
+    afterEvaluate { Project project ->
+        ext.pluginContainer = project.getPlugins()
+        def hasAppPlugin = ext.pluginContainer.hasPlugin("com.android.application")
+        def hasLibPlugin = ext.pluginContainer.hasPlugin("com.android.library")
+        if (hasAppPlugin || hasLibPlugin) {
+            configure(project) {
+                apply from: "${rootDir}/common.gradle"
+            }
+        }
+    }
+}
+
+task clean(type: Delete) {
+    File buildDir = rootProject.buildDir
+    println("Clean Project: " + buildDir.getAbsolutePath())
+    delete buildDir
+    delete new File(buildDir.getParentFile(), "debug")
+    delete new File(buildDir.getParentFile(), "release")
+}

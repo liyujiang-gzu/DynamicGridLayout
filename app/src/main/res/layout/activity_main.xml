@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Hello World!" />
+
+    <RelativeLayout
+        android:id="@+id/dynamic_area"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/item_1_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/item_1"
+            android:layout_alignBottom="@+id/item_1"
+            android:scaleType="fitXY"
+            tools:ignore="ContentDescription" />
+
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/item_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/item_2_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/item_2"
+            android:layout_alignBottom="@+id/item_2"
+            android:scaleType="fitXY"
+            tools:ignore="ContentDescription" />
+
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/item_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_1"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/item_3_bg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/item_3"
+            android:layout_alignBottom="@+id/item_3"
+            android:scaleType="fitXY"
+            tools:ignore="ContentDescription" />
+
+        <androidx.gridlayout.widget.GridLayout
+            android:id="@+id/item_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_2"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+</LinearLayout>
