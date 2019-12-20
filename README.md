@@ -1,0 +1,2 @@
+# DynamicGridLayout
+Android原生开发通过服务端下发JSON数据实现动态网格布局示例
