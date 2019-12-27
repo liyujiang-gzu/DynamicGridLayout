@@ -85,8 +85,8 @@ public class DynamicGridUtils {
             try {
                 renderIndex(gridLayout, sizeCell, imageMargin, entity);
             } catch (Exception e) {
-                Logger.debug("[动态布局]startX=" + entity.getStartX() + ", spanX=" + entity.getColumnSpan() + "\n "
-                        + "startY=" + entity.getStartY() + ", spanY=" + entity.getRowSpan() + "\n" + ThrowableUtils.getFullStackTrace(e));
+                Logger.debug("[动态布局]startX=" + entity.getStartX() + ", columnSpan=" + entity.getColumnSpan() + "\n "
+                        + "startY=" + entity.getStartY() + ", rowSpan=" + entity.getRowSpan() + "\n" + ThrowableUtils.getFullStackTrace(e));
             }
         }
     }
@@ -102,7 +102,7 @@ public class DynamicGridUtils {
         int rowSpan = entity.getRowSpan();
         if (startY + rowSpan > rowCount) {
             rowSpan = rowCount - startY;
-            LogUtils.d("[动态布局]行列网格已经越出边界" + (entity.getColumnSpan() - rowSpan) + "格，自动校正");
+            LogUtils.d("[动态布局]行列网格已经越出边界" + (entity.getRowSpan() - rowSpan) + "格，自动校正");
         }
         GridLayout.Spec rowSpec = GridLayout.spec(startY, rowSpan);
         int columnCount = layout.getColumnCount();
