@@ -9,7 +9,7 @@ import com.blankj.utilcode.util.ThreadUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.github.gzuliyujiang.DynamicGridLayout.entity.DynamicAreaEntity;
 import com.github.gzuliyujiang.DynamicGridLayout.util.AssetUtils;
-import com.github.gzuliyujiang.DynamicGridLayout.util.DynamicGridUtils;
+import com.github.gzuliyujiang.DynamicGridLayout.util.DynamicLayoutUtils;
 import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(String result) {
                 DynamicAreaEntity data = new Gson().fromJson(result, DynamicAreaEntity.class);
-                DynamicGridUtils.renderDynamicArea(containerView, data);
+                DynamicLayoutUtils.renderDynamicArea(containerView, data);
             }
 
             @Override
