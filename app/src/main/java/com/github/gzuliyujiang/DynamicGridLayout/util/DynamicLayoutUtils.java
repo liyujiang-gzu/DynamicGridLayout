@@ -59,7 +59,7 @@ public class DynamicLayoutUtils {
         }
         //此处不应该用容器的宽度，应该用屏幕宽减去容器边距来适配
         int rootPadding = SizeUtils.dp2px(8);
-        int width = ScreenUtils.getScreenWidth() - 2 * rootPadding;
+        int width = ScreenUtils.getScreenWidth() - rootPadding;
         int rowCount = data.getRowCount();
         int columnCount = data.getColumnCount();
         Logger.debug("[动态布局]以屏幕宽为基准，容器宽=" + width + "px，容器边距=" + rootPadding + "px，行=" + rowCount + "格，列=" + columnCount + "格");
