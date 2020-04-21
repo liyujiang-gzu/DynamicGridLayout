@@ -39,7 +39,7 @@ public class DynamicLayoutUtils {
         renderItem(containerView, item3, R.id.item_3, R.id.item_3_bg);
     }
 
-    static void renderItem(ViewGroup containerView,DynamicItemEntity data, @IdRes int containerId, @IdRes int bgId) {
+    static void renderItem(ViewGroup containerView, DynamicItemEntity data, @IdRes int containerId, @IdRes int bgId) {
         FrameLayout frameLayout = containerView.findViewById(containerId);
         frameLayout.removeAllViews();
         ImageView ivBg = containerView.findViewById(bgId);
@@ -69,15 +69,14 @@ public class DynamicLayoutUtils {
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) frameLayout.getLayoutParams();
         layoutParams.width = width;
         layoutParams.height = height;
-        frameLayout.setPadding(rootPadding, 0, rootPadding, 0);
         frameLayout.setLayoutParams(layoutParams);
         frameLayout.setVisibility(View.VISIBLE);
         ivBg.setVisibility(View.VISIBLE);
         ImageLoader.display(ivBg, data.getBackground());
-        int imageMargin = SizeUtils.dp2px(4);
+        int imagePadding = SizeUtils.dp2px(4);
         for (final DynamicIndexEntity entity : indexes) {
             try {
-                renderIndex(frameLayout, rowCount, columnCount, sizeCell, imageMargin, entity);
+                renderIndex(frameLayout, rootPadding, rowCount, columnCount, sizeCell, imagePadding, entity);
             } catch (Exception e) {
                 Logger.debug("[动态布局]startX=" + entity.getStartX() + ", spanX=" + entity.getColumnSpan() + "\n "
                         + "startY=" + entity.getStartY() + ", spanY=" + entity.getRowSpan() + "\n" + ThrowableUtils.getFullStackTrace(e));
@@ -85,7 +84,7 @@ public class DynamicLayoutUtils {
         }
     }
 
-    private static void renderIndex(FrameLayout layout, int rowCount, int columnCount, float sizeCell, int margin, DynamicIndexEntity entity) {
+    private static void renderIndex(FrameLayout layout, int rootPadding, int rowCount, int columnCount, float sizeCell, int padding, DynamicIndexEntity entity) {
         ImageView imageView = new ImageView(layout.getContext());
         int randomColor = ColorUtils.getRandomColor();
         if (DEBUG_GRID_LAYOUT) {
@@ -103,18 +102,17 @@ public class DynamicLayoutUtils {
             columnSpan = columnCount - startX;
             Logger.debug("[动态布局]列网格已经越出边界" + (entity.getRowSpan() - columnSpan) + "格，自动校正");
         }
-        int width = (int) ((columnSpan * sizeCell) - 2 * margin);
-        int height = (int) ((rowSpan * sizeCell) - 2 * margin);
-        Logger.debug("[动态布局]图片边距" + margin + "px，宽度=" + width + "px，高度=" + height + "px");
+        int width = (int) (columnSpan * sizeCell) - 2 * padding;
+        int height = (int) (rowSpan * sizeCell) - 2 * padding;
+        Logger.debug("[动态布局]图片边距" + padding + "px，宽度=" + width + "px，高度=" + height + "px");
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(width, height);
-        int left = (int) (startX * sizeCell);
-        int top = (int) (startY * sizeCell);
-        layoutParams.setMargins(margin + left, margin + top, margin, margin);
+        int left = (int) (startX * sizeCell) + rootPadding;
+        int top = (int) (startY * sizeCell) + rootPadding;
+        layoutParams.setMargins(left, top, 0, 0);
         imageView.setLayoutParams(layoutParams);
+        imageView.setAdjustViewBounds(true);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        imageView.setOnClickListener(v -> {
-            ToastUtils.showShort("点击" + entity.getClick());
-        });
+        imageView.setOnClickListener((View v) -> ToastUtils.showShort("点击" + entity.getClick()));
         if (!DEBUG_GRID_LAYOUT) {
             ImageLoader.display(imageView, entity.getImage());
         }
