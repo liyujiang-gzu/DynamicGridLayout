@@ -58,7 +58,7 @@ public class DynamicLayoutUtils {
             frameLayout.setBackgroundColor(0xEE333333);
         }
         //此处不应该用容器的宽度，应该用屏幕宽减去容器边距来适配
-        int rootPadding = SizeUtils.dp2px(8);
+        int rootPadding = 0;//SizeUtils.dp2px(8);
         int width = ScreenUtils.getScreenWidth() - rootPadding;
         int rowCount = data.getRowCount();
         int columnCount = data.getColumnCount();
@@ -73,7 +73,7 @@ public class DynamicLayoutUtils {
         frameLayout.setVisibility(View.VISIBLE);
         ivBg.setVisibility(View.VISIBLE);
         ImageLoader.display(ivBg, data.getBackground());
-        int imagePadding = SizeUtils.dp2px(4);
+        int imagePadding = 0;//SizeUtils.dp2px(4);
         for (final DynamicIndexEntity entity : indexes) {
             try {
                 renderIndex(frameLayout, rootPadding, rowCount, columnCount, sizeCell, imagePadding, entity);
